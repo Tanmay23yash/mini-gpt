@@ -1,0 +1,16 @@
+# Install torch first with the CUDA build that matches your GPU, e.g.:
+#   pip install torch --index-url https://download.pytorch.org/whl/cu128
+torch==2.11.0
+numpy==2.4.1
+pandas==2.3.3
+scikit-learn==1.8.0
+matplotlib==3.11.2
+seaborn==0.13.2
+PyYAML==6.0.3
+python-dotenv==1.2.1
+tqdm==4.67.1
+datasets==5.0.1
+huggingface_hub==1.33.0
+tensorboard==2.21.0
+pytest==9.1.1
+# Stage 3+ (added when needed): transformers, peft, bitsandbytes, accelerate, gradio

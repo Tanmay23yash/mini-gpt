@@ -1,0 +1,21 @@
+# Large / local-only artifacts
+data/
+checkpoints/
+wandb/
+runs/
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ipynb_checkpoints/
+build/
+dist/
+
+# Editors / OS
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store
