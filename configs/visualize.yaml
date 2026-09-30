@@ -1,0 +1,11 @@
+# Attention visualization for python -m minigpt.visualize
+checkpoint: checkpoints/stage2/gpt_small/best.pt
+tokenizer: artifacts/tokenizer/bpe_8192.json
+output_dir: results/stage2/attention
+sentences:                        # no emoji: matplotlib's default font can't draw them
+  - "bhai aaj ka match bahut accha tha"
+  - "yeh movie bilkul bakwas thi, paisa barbaad"
+  - "modi ji ne kaha tha ki sab theek hoga"
+  - "I love this song yaar, dil khush ho gaya"
+stats_corpus: data/processed/pretrain/val.txt
+stats_n_texts: 500
