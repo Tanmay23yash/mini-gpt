@@ -1,0 +1,15 @@
+# Stage 1: TF-IDF (word + char n-grams) + logistic regression.
+run_name: tfidf_logreg
+model_type: tfidf
+seeds: [42]            # deterministic model, one run is enough
+
+tfidf:
+  word_ngrams: [1, 2]
+  char_ngrams: [2, 5]  # char n-grams are robust to Hinglish spelling variants (nahi / nhi / ni)
+  min_df: 2
+  max_features: 200000
+  sublinear_tf: true
+
+logreg:
+  C_grid: [0.03, 0.06, 0.125, 0.25, 0.5, 1.0, 2.0]   # inverse regularization strength, picked on val
+  max_iter: 2000

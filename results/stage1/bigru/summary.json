@@ -1,0 +1,261 @@
+{
+  "run_name": "bigru",
+  "config": {
+    "run_name": "bigru",
+    "model_type": "rnn",
+    "seeds": [
+      42,
+      43,
+      44
+    ],
+    "data": {
+      "max_len": 64,
+      "min_freq": 2,
+      "max_vocab": 30000,
+      "lowercase": true
+    },
+    "model": {
+      "rnn_type": "gru",
+      "embed_dim": 128,
+      "hidden_dim": 128,
+      "num_layers": 1,
+      "bidirectional": true,
+      "dropout": 0.4
+    },
+    "train": {
+      "batch_size": 64,
+      "epochs": 20,
+      "lr": 0.002,
+      "weight_decay": 0.0001,
+      "grad_clip": 1.0,
+      "patience": 4
+    },
+    "labels": [
+      "negative",
+      "neutral",
+      "positive"
+    ]
+  },
+  "vocab_size": 12869,
+  "oov_rate": {
+    "val": 0.10453642037727955,
+    "test": 0.10069408112727146
+  },
+  "device": "cuda",
+  "train_seconds": 101.1,
+  "seeds": [
+    {
+      "seed": 42,
+      "best_epoch": 4,
+      "n_params": 1846147,
+      "val": {
+        "accuracy": 0.601,
+        "macro_f1": 0.6009680014045976,
+        "f1_per_class": {
+          "negative": 0.6464542651593012,
+          "neutral": 0.4813153961136024,
+          "positive": 0.6751343429408891
+        },
+        "confusion_matrix": [
+          [
+            629,
+            194,
+            67
+          ],
+          [
+            338,
+            483,
+            307
+          ],
+          [
+            89,
+            202,
+            691
+          ]
+        ]
+      },
+      "test": {
+        "accuracy": 0.654,
+        "macro_f1": 0.6544272273165013,
+        "f1_per_class": {
+          "negative": 0.6806943713834824,
+          "neutral": 0.5384238864415076,
+          "positive": 0.7441634241245136
+        },
+        "confusion_matrix": [
+          [
+            647,
+            201,
+            52
+          ],
+          [
+            311,
+            550,
+            239
+          ],
+          [
+            43,
+            192,
+            765
+          ]
+        ]
+      }
+    },
+    {
+      "seed": 43,
+      "best_epoch": 4,
+      "n_params": 1846147,
+      "val": {
+        "accuracy": 0.6,
+        "macro_f1": 0.603338092376243,
+        "f1_per_class": {
+          "negative": 0.6223736513344691,
+          "neutral": 0.5147526100771675,
+          "positive": 0.6728880157170923
+        },
+        "confusion_matrix": [
+          [
+            548,
+            279,
+            63
+          ],
+          [
+            255,
+            567,
+            306
+          ],
+          [
+            68,
+            229,
+            685
+          ]
+        ]
+      },
+      "test": {
+        "accuracy": 0.6473333333333333,
+        "macro_f1": 0.6506648849015788,
+        "f1_per_class": {
+          "negative": 0.6553540081919251,
+          "neutral": 0.5692784417884019,
+          "positive": 0.7273622047244095
+        },
+        "confusion_matrix": [
+          [
+            560,
+            292,
+            48
+          ],
+          [
+            212,
+            643,
+            245
+          ],
+          [
+            37,
+            224,
+            739
+          ]
+        ]
+      }
+    },
+    {
+      "seed": 44,
+      "best_epoch": 5,
+      "n_params": 1846147,
+      "val": {
+        "accuracy": 0.5926666666666667,
+        "macro_f1": 0.5970392666072971,
+        "f1_per_class": {
+          "negative": 0.6307277628032345,
+          "neutral": 0.5036429872495446,
+          "positive": 0.6567470497691124
+        },
+        "confusion_matrix": [
+          [
+            585,
+            261,
+            44
+          ],
+          [
+            292,
+            553,
+            283
+          ],
+          [
+            88,
+            254,
+            640
+          ]
+        ]
+      },
+      "test": {
+        "accuracy": 0.651,
+        "macro_f1": 0.6553147856450598,
+        "f1_per_class": {
+          "negative": 0.6735921268452706,
+          "neutral": 0.5630366018978762,
+          "positive": 0.7293156281920327
+        },
+        "confusion_matrix": [
+          [
+            616,
+            252,
+            32
+          ],
+          [
+            265,
+            623,
+            212
+          ],
+          [
+            48,
+            238,
+            714
+          ]
+        ]
+      }
+    }
+  ],
+  "val_accuracy": {
+    "mean": 0.5978888888888889,
+    "std": 0.004550132273209598
+  },
+  "val_macro_f1": {
+    "mean": 0.6004484534627126,
+    "std": 0.0031813910581413906
+  },
+  "test_accuracy": {
+    "mean": 0.6507777777777778,
+    "std": 0.003338884266959293
+  },
+  "test_macro_f1": {
+    "mean": 0.65346896595438,
+    "std": 0.002468621651784108
+  },
+  "majority_baseline_test": {
+    "accuracy": 0.36666666666666664,
+    "macro_f1": 0.17886178861788618,
+    "f1_per_class": {
+      "negative": 0.0,
+      "neutral": 0.5365853658536586,
+      "positive": 0.0
+    },
+    "confusion_matrix": [
+      [
+        0,
+        900,
+        0
+      ],
+      [
+        0,
+        1100,
+        0
+      ],
+      [
+        0,
+        1000,
+        0
+      ]
+    ]
+  }
+}

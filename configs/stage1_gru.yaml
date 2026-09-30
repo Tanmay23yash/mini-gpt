@@ -1,0 +1,26 @@
+# Stage 1: word-level BiGRU classifier (same settings as bilstm).
+run_name: bigru
+model_type: rnn
+seeds: [42, 43, 44]    # report mean ± std; one seed on 3k val tweets is noisy
+
+data:
+  max_len: 64          # tokens; p95 tweet length is ~25 words
+  min_freq: 2          # words seen once in train become <unk>
+  max_vocab: 30000
+  lowercase: true
+
+model:
+  rnn_type: gru
+  embed_dim: 128
+  hidden_dim: 128
+  num_layers: 1
+  bidirectional: true
+  dropout: 0.4
+
+train:
+  batch_size: 64
+  epochs: 20
+  lr: 0.002
+  weight_decay: 0.0001
+  grad_clip: 1.0
+  patience: 4          # early stop after this many epochs without val macro F1 gain
