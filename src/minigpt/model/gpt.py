@@ -12,7 +12,7 @@ Training objective: at every position t, predict token t+1. The targets are the
 inputs shifted left by one, and the loss is cross-entropy averaged over all positions.
 
 Provided: config, layers, weight tying, initialization, parameter count.
-What you implement: ``forward`` (the ``TODO``). Tests: ``pytest tests/test_gpt.py -v``.
+Tests: ``pytest tests/test_gpt.py -v``.
 """
 
 from __future__ import annotations
@@ -122,5 +122,36 @@ class GPT(nn.Module):
                else loss = None
             8. return GPTOutput(logits, loss, hidden, attentions or None)
         """
-        # TODO: implement
-        raise NotImplementedError
+        # 1. Check the sequence isn't longer than the model can handle
+        b, t = idx.shape
+        if t > self.config.block_size:
+            raise ValueError(f"sequence length {t} exceeds block_size {self.config.block_size}")
+
+        # 2-3. What each token is + where it sits
+        pos = torch.arange(t, device=idx.device)                    # (T,)
+        x = self.drop(self.tok_emb(idx) + self.pos_emb(pos))        # (B, T, C)
+
+        # 4. Run through every transformer block
+        attentions: list[torch.Tensor] = []
+        for block in self.blocks:
+            if return_attn:
+                x, w = block(x, return_attn=True)
+                attentions.append(w)
+            else:
+                x = block(x)
+
+        # 5-6. Final norm, then a score for every token in the vocabulary
+        hidden = self.ln_f(x)                                       # (B, T, C)
+        logits = self.lm_head(hidden)                               # (B, T, vocab_size)
+
+        # 7. Loss: flatten (B, T) into one long list of predictions
+        loss = None
+        if targets is not None:
+            loss = F.cross_entropy(
+                logits.reshape(-1, logits.size(-1)),                # (B*T, vocab)
+                targets.reshape(-1),                                # (B*T,)
+                ignore_index=-1,
+            )
+
+        # 8. Package everything up
+        return GPTOutput(logits, loss, hidden, attentions if return_attn else None)
