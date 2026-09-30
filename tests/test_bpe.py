@@ -172,3 +172,17 @@ def test_encode_matches_after_save_load(trained: BPETokenizer, tmp_path: Path) -
     assert loaded.eot_id == trained.eot_id
     for text in ROUND_TRIP_TEXTS:
         assert loaded.encode(text) == trained.encode(text)
+
+
+def test_decode_accepts_a_generator(trained: BPETokenizer) -> None:
+    ids = trained.encode("bhai 😂")
+    assert trained.decode(i for i in ids) == "bhai 😂"
+
+
+def test_verbose_training_prints_merged_tokens(capsys: pytest.CaptureFixture[str]) -> None:
+    tok = BPETokenizer()
+    tok.train(CORPUS, vocab_size=256 + 60, verbose=True)  # includes merges of merged tokens
+    out = capsys.readouterr().out
+    assert "merge" in out
+    assert ENDOFTEXT not in out  # new id 256 must print as a merged token, not the special token
+    assert tok.vocab == tok._build_vocab()  # vocab kept in sync during training
