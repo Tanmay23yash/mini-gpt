@@ -20,7 +20,7 @@ The MLP expands each token vector 4x, applies GELU (a smooth ReLU), and projects
 
 Shape legend: B = batch, T = sequence length, C = d_model, H = n_heads.
 
-What you implement: every ``TODO``. Tests: ``pytest tests/test_block.py -v``.
+Tests: ``pytest tests/test_block.py -v``.
 """
 
 from __future__ import annotations
@@ -36,17 +36,14 @@ class MLP(nn.Module):
 
     def __init__(self, d_model: int, mlp_ratio: int = 4, dropout: float = 0.0, bias: bool = True) -> None:
         super().__init__()
-        # TODO: implement. The tests rely on these attribute names:
-        #   - self.fc:      nn.Linear(d_model, mlp_ratio * d_model)
-        #   - self.act:     nn.GELU()
-        #   - self.proj:    nn.Linear(mlp_ratio * d_model, d_model)
-        #   - self.dropout: nn.Dropout(dropout)
-        raise NotImplementedError
+        self.fc = nn.Linear(d_model, mlp_ratio * d_model, bias=bias)    # expand: C -> 4C
+        self.act = nn.GELU()
+        self.proj = nn.Linear(mlp_ratio * d_model, d_model, bias=bias)  # shrink back: 4C -> C
+        self.dropout = nn.Dropout(dropout)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """(B, T, C) -> (B, T, C): fc -> act -> proj -> dropout."""
-        # TODO: implement
-        raise NotImplementedError
+        return self.dropout(self.proj(self.act(self.fc(x))))
 
 
 class Block(nn.Module):
@@ -64,12 +61,10 @@ class Block(nn.Module):
     def __init__(self, d_model: int, n_heads: int, block_size: int, dropout: float = 0.0,
                  mlp_ratio: int = 4, bias: bool = True) -> None:
         super().__init__()
-        # TODO: implement. The tests rely on these attribute names:
-        #   - self.ln1:  nn.LayerNorm(d_model, bias=bias)   - before attention
-        #   - self.attn: CausalSelfAttention(d_model, n_heads, block_size, dropout, bias)
-        #   - self.ln2:  nn.LayerNorm(d_model, bias=bias)   - before the MLP
-        #   - self.mlp:  MLP(d_model, mlp_ratio, dropout, bias)
-        raise NotImplementedError
+        self.ln1 = nn.LayerNorm(d_model, bias=bias)                                   # before attention
+        self.attn = CausalSelfAttention(d_model, n_heads, block_size, dropout, bias)
+        self.ln2 = nn.LayerNorm(d_model, bias=bias)                                   # before the MLP
+        self.mlp = MLP(d_model, mlp_ratio, dropout, bias)
 
     def forward(self, x: torch.Tensor, return_attn: bool = False
                 ) -> torch.Tensor | tuple[torch.Tensor, torch.Tensor]:
@@ -86,5 +81,7 @@ class Block(nn.Module):
             2. x = x + a                       # residual 1
             3. x = x + self.mlp(self.ln2(x))   # residual 2 (note: ln2 of the NEW x)
         """
-        # TODO: implement
-        raise NotImplementedError
+        a, weights = self.attn(self.ln1(x), return_attn=True)  # communicate
+        x = x + a                                               # residual 1
+        x = x + self.mlp(self.ln2(x))                           # think, residual 2
+        return (x, weights) if return_attn else x
