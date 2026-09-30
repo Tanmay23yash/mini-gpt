@@ -66,3 +66,20 @@ One entry per run: date, config file, key hyperparameters, metrics, notes.
   interior optimum (val F1 1e-5: 0.609, 3e-5: 0.631, 1e-4: 0.617).
 - Re-running the pre-trained sweep reproduced every test number to 4 decimals (fixed seeds,
   deterministic cuDNN).
+| 2026-09-30 | 3 | `configs/llm.yaml` | Qwen3.5-0.8B zero-shot (label scoring, bf16) | 0.75B | test acc 0.511 (val 0.484) | test 0.415 (val 0.396) | Never predicts neutral (0%). Contextual calibration: test 0.430. |
+| 2026-09-30 | 3 | `configs/llm.yaml` | Qwen3.5-0.8B 3-shot (k chosen on val from 0/3/6) | 0.75B | test acc 0.565 | **test 0.508 ± 0.026** | 3 draws of the examples. 5-8% neutral predictions. ~9 min per 3k tweets on the GTX 1650. |
+
+### Zero/few-shot notes (Qwen3.5-0.8B)
+
+- Label scoring works as intended: 97-99% of the next-token probability goes to the three
+  label words, so the model answers in format; the problem is *which* label.
+- The base model almost never says **neutral** (0% zero-shot, 4-8% few-shot, vs 37% of tweets).
+  Examples help (+9 F1 with 3 shots) but 6 shots is worse than 3 on val (0.459 vs 0.486).
+- **Contextual calibration backfires with examples in the prompt.** Its content-free inputs
+  ("N/A", "") get labeled *neutral* (prior 0.57-0.73 with 3-6 shots), which is the correct answer
+  for them, so dividing by that prior removes neutral even more. It only helps zero-shot
+  (+1.5 F1), where the prior is positive-heavy. The method assumes content-free = uniform,
+  which does not hold for a task with a neutral class.
+- The choice of the 3 examples moves test macro F1 by up to 5 points (0.484-0.535).
+- Even few-shot (0.508) is far below the 5M-param mini-GPT fine-tuned on SentiMix (0.679):
+  task-specific labels matter more than 150x more parameters without them.

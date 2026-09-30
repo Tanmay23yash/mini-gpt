@@ -99,7 +99,10 @@ def run_one(cfg: dict[str, Any], lr: float, seed: int, data: dict[str, Any], lab
     trainable = [p for p in model.parameters() if p.requires_grad]
     optimizer = torch.optim.AdamW(trainable, lr=lr, weight_decay=t_cfg["weight_decay"])
     if cfg["dtype"] == "float16":   # fp16 base weights: autocast + loss scaling (Kaggle T4)
-        amp_ctx, scaler = torch.autocast("cuda", dtype=torch.float16), torch.amp.GradScaler("cuda")
+        # init_scale 2**10, not the default 2**16: measured on Qwen3.5-0.8B, scales above ~64
+        # overflow, so the default wastes the first ~10 steps halving its way down.
+        amp_ctx = torch.autocast("cuda", dtype=torch.float16)
+        scaler = torch.amp.GradScaler("cuda", init_scale=2.0 ** 10)
     else:                           # bf16 (or fp32) base weights: no loss scaling needed
         amp_ctx, scaler = nullcontext(), torch.amp.GradScaler("cuda", enabled=False)
 

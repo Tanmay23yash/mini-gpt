@@ -1,0 +1,552 @@
+{
+  "model_id": "Qwen/Qwen3.5-0.8B",
+  "config": {
+    "system_prompt": "Classify the sentiment of the Hinglish (Hindi-English code-mixed) tweet as positive, negative or neutral. Answer with one word.",
+    "k_values": [
+      0,
+      3,
+      6
+    ],
+    "example_seeds": [
+      1,
+      2,
+      3
+    ],
+    "batch_size": {
+      "0": 32,
+      "3": 16,
+      "6": 8
+    },
+    "content_free": [
+      "N/A",
+      "",
+      "[MASK]"
+    ]
+  },
+  "val": {
+    "k=0": {
+      "raw": {
+        "accuracy": 0.484,
+        "macro_f1": 0.3964235707890902,
+        "f1_per_class": {
+          "negative": 0.5741758241758241,
+          "neutral": 0.001771479185119575,
+          "positive": 0.6133234090063268
+        },
+        "confusion_matrix": [
+          [
+            627,
+            0,
+            263
+          ],
+          [
+            509,
+            1,
+            618
+          ],
+          [
+            158,
+            0,
+            824
+          ]
+        ],
+        "pred_distribution": {
+          "negative": 0.43133333333333335,
+          "neutral": 0.0003333333333333333,
+          "positive": 0.5683333333333334
+        }
+      },
+      "calibrated": {
+        "accuracy": 0.5013333333333333,
+        "macro_f1": 0.4123041460150973,
+        "f1_per_class": {
+          "negative": 0.593633732947499,
+          "neutral": 0.0035398230088495575,
+          "positive": 0.6397388820889433
+        },
+        "confusion_matrix": [
+          [
+            718,
+            0,
+            172
+          ],
+          [
+            613,
+            2,
+            513
+          ],
+          [
+            198,
+            0,
+            784
+          ]
+        ],
+        "pred_distribution": {
+          "negative": 0.5096666666666667,
+          "neutral": 0.0006666666666666666,
+          "positive": 0.48966666666666664
+        }
+      },
+      "content_free_prior": {
+        "negative": 0.2351285219192505,
+        "neutral": 0.2290809601545334,
+        "positive": 0.5357905030250549
+      },
+      "label_token_mass": 0.9933355450630188,
+      "seconds": 296.0
+    },
+    "k=3": {
+      "raw": {
+        "accuracy": 0.5323333333333333,
+        "macro_f1": 0.48572331438649313,
+        "f1_per_class": {
+          "negative": 0.599250936329588,
+          "neutral": 0.19421793921423278,
+          "positive": 0.6637010676156584
+        },
+        "confusion_matrix": [
+          [
+            720,
+            68,
+            102
+          ],
+          [
+            579,
+            131,
+            418
+          ],
+          [
+            214,
+            22,
+            746
+          ]
+        ],
+        "pred_distribution": {
+          "negative": 0.5043333333333333,
+          "neutral": 0.07366666666666667,
+          "positive": 0.422
+        }
+      },
+      "calibrated": {
+        "accuracy": 0.5033333333333333,
+        "macro_f1": 0.4135893996908964,
+        "f1_per_class": {
+          "negative": 0.6025588113908378,
+          "neutral": 0.001771479185119575,
+          "positive": 0.636437908496732
+        },
+        "confusion_matrix": [
+          [
+            730,
+            0,
+            160
+          ],
+          [
+            600,
+            1,
+            527
+          ],
+          [
+            203,
+            0,
+            779
+          ]
+        ],
+        "pred_distribution": {
+          "negative": 0.511,
+          "neutral": 0.0003333333333333333,
+          "positive": 0.4886666666666667
+        }
+      },
+      "content_free_prior": {
+        "negative": 0.14906617999076843,
+        "neutral": 0.72487872838974,
+        "positive": 0.12605513632297516
+      },
+      "label_token_mass": 0.9670596718788147,
+      "seconds": 494.2
+    },
+    "k=6": {
+      "raw": {
+        "accuracy": 0.5253333333333333,
+        "macro_f1": 0.4594428184997826,
+        "f1_per_class": {
+          "negative": 0.6129032258064516,
+          "neutral": 0.11631663974151858,
+          "positive": 0.6491085899513777
+        },
+        "confusion_matrix": [
+          [
+            703,
+            33,
+            154
+          ],
+          [
+            525,
+            72,
+            531
+          ],
+          [
+            176,
+            5,
+            801
+          ]
+        ],
+        "pred_distribution": {
+          "negative": 0.468,
+          "neutral": 0.03666666666666667,
+          "positive": 0.49533333333333335
+        }
+      },
+      "calibrated": {
+        "accuracy": 0.4836666666666667,
+        "macro_f1": 0.39639428026374707,
+        "f1_per_class": {
+          "negative": 0.5819397993311036,
+          "neutral": 0.001771479185119575,
+          "positive": 0.605471562275018
+        },
+        "confusion_matrix": [
+          [
+            609,
+            0,
+            281
+          ],
+          [
+            453,
+            1,
+            674
+          ],
+          [
+            141,
+            0,
+            841
+          ]
+        ],
+        "pred_distribution": {
+          "negative": 0.401,
+          "neutral": 0.0003333333333333333,
+          "positive": 0.5986666666666667
+        }
+      },
+      "content_free_prior": {
+        "negative": 0.26228731870651245,
+        "neutral": 0.5649153590202332,
+        "positive": 0.1727973222732544
+      },
+      "label_token_mass": 0.9796779751777649,
+      "seconds": 743.0
+    }
+  },
+  "test": {
+    "k=0": {
+      "raw": {
+        "accuracy": 0.511,
+        "macro_f1": 0.4150993105515883,
+        "f1_per_class": {
+          "negative": 0.5934272300469483,
+          "neutral": 0.0018165304268846503,
+          "positive": 0.6500541711809318
+        },
+        "confusion_matrix": [
+          [
+            632,
+            0,
+            268
+          ],
+          [
+            498,
+            1,
+            601
+          ],
+          [
+            100,
+            0,
+            900
+          ]
+        ],
+        "pred_distribution": {
+          "negative": 0.41,
+          "neutral": 0.0003333333333333333,
+          "positive": 0.5896666666666667
+        }
+      },
+      "calibrated": {
+        "accuracy": 0.526,
+        "macro_f1": 0.4295512127131465,
+        "f1_per_class": {
+          "negative": 0.6053736356003359,
+          "neutral": 0.003629764065335753,
+          "positive": 0.6796502384737679
+        },
+        "confusion_matrix": [
+          [
+            721,
+            0,
+            179
+          ],
+          [
+            616,
+            2,
+            482
+          ],
+          [
+            145,
+            0,
+            855
+          ]
+        ],
+        "pred_distribution": {
+          "negative": 0.494,
+          "neutral": 0.0006666666666666666,
+          "positive": 0.5053333333333333
+        }
+      },
+      "content_free_prior": {
+        "negative": 0.2351285219192505,
+        "neutral": 0.2290809601545334,
+        "positive": 0.5357905030250549
+      },
+      "label_token_mass": 0.9934684038162231,
+      "seconds": 249.0
+    },
+    "k=3": {
+      "runs": [
+        {
+          "raw": {
+            "accuracy": 0.582,
+            "macro_f1": 0.5347630513838404,
+            "f1_per_class": {
+              "negative": 0.6397963512940178,
+              "neutral": 0.24386617100371746,
+              "positive": 0.720626631853786
+            },
+            "confusion_matrix": [
+              [
+                754,
+                58,
+                88
+              ],
+              [
+                554,
+                164,
+                382
+              ],
+              [
+                149,
+                23,
+                828
+              ]
+            ],
+            "pred_distribution": {
+              "negative": 0.4856666666666667,
+              "neutral": 0.08166666666666667,
+              "positive": 0.43266666666666664
+            }
+          },
+          "calibrated": {
+            "accuracy": 0.538,
+            "macro_f1": 0.4390895283888561,
+            "f1_per_class": {
+              "negative": 0.629987400251995,
+              "neutral": 0.0018165304268846503,
+              "positive": 0.6854646544876887
+            },
+            "confusion_matrix": [
+              [
+                750,
+                0,
+                150
+              ],
+              [
+                594,
+                1,
+                505
+              ],
+              [
+                137,
+                0,
+                863
+              ]
+            ],
+            "pred_distribution": {
+              "negative": 0.49366666666666664,
+              "neutral": 0.0003333333333333333,
+              "positive": 0.506
+            }
+          },
+          "content_free_prior": {
+            "negative": 0.14906617999076843,
+            "neutral": 0.72487872838974,
+            "positive": 0.12605513632297516
+          },
+          "label_token_mass": 0.9661263823509216,
+          "seconds": 482.8,
+          "example_seed": 1
+        },
+        {
+          "raw": {
+            "accuracy": 0.564,
+            "macro_f1": 0.5060575492650213,
+            "f1_per_class": {
+              "negative": 0.6335570469798658,
+              "neutral": 0.18335901386748846,
+              "positive": 0.7012565869477098
+            },
+            "confusion_matrix": [
+              [
+                708,
+                57,
+                135
+              ],
+              [
+                514,
+                119,
+                467
+              ],
+              [
+                113,
+                22,
+                865
+              ]
+            ],
+            "pred_distribution": {
+              "negative": 0.445,
+              "neutral": 0.066,
+              "positive": 0.489
+            }
+          },
+          "calibrated": {
+            "accuracy": 0.5173333333333333,
+            "macro_f1": 0.4261613891674778,
+            "f1_per_class": {
+              "negative": 0.6095423563777994,
+              "neutral": 0.023255813953488372,
+              "positive": 0.6456859971711457
+            },
+            "confusion_matrix": [
+              [
+                626,
+                4,
+                270
+              ],
+              [
+                442,
+                13,
+                645
+              ],
+              [
+                86,
+                1,
+                913
+              ]
+            ],
+            "pred_distribution": {
+              "negative": 0.38466666666666666,
+              "neutral": 0.006,
+              "positive": 0.6093333333333333
+            }
+          },
+          "content_free_prior": {
+            "negative": 0.2732539176940918,
+            "neutral": 0.5564090609550476,
+            "positive": 0.17033694684505463
+          },
+          "label_token_mass": 0.9733768105506897,
+          "seconds": 568.7,
+          "example_seed": 2
+        },
+        {
+          "raw": {
+            "accuracy": 0.5486666666666666,
+            "macro_f1": 0.48359084619840936,
+            "f1_per_class": {
+              "negative": 0.6209912536443148,
+              "neutral": 0.1567043618739903,
+              "positive": 0.6730769230769231
+            },
+            "confusion_matrix": [
+              [
+                639,
+                31,
+                230
+              ],
+              [
+                439,
+                97,
+                564
+              ],
+              [
+                80,
+                10,
+                910
+              ]
+            ],
+            "pred_distribution": {
+              "negative": 0.386,
+              "neutral": 0.046,
+              "positive": 0.568
+            }
+          },
+          "calibrated": {
+            "accuracy": 0.5243333333333333,
+            "macro_f1": 0.4280020352405556,
+            "f1_per_class": {
+              "negative": 0.619452313503305,
+              "neutral": 0.007246376811594203,
+              "positive": 0.6573074154067674
+            },
+            "confusion_matrix": [
+              [
+                656,
+                0,
+                244
+              ],
+              [
+                475,
+                4,
+                621
+              ],
+              [
+                87,
+                0,
+                913
+              ]
+            ],
+            "pred_distribution": {
+              "negative": 0.406,
+              "neutral": 0.0013333333333333333,
+              "positive": 0.5926666666666667
+            }
+          },
+          "content_free_prior": {
+            "negative": 0.17759577929973602,
+            "neutral": 0.6220486760139465,
+            "positive": 0.20035560429096222
+          },
+          "label_token_mass": 0.9783175587654114,
+          "seconds": 571.2,
+          "example_seed": 3
+        }
+      ],
+      "raw": {
+        "macro_f1": {
+          "mean": 0.5081371489490903,
+          "std": 0.025649409291822856
+        },
+        "accuracy": 0.5648888888888889
+      },
+      "calibrated": {
+        "macro_f1": {
+          "mean": 0.43108431759896315,
+          "std": 0.006993535896422356
+        },
+        "accuracy": 0.5265555555555556
+      }
+    }
+  },
+  "chosen": {
+    "k": 3,
+    "variant": "raw"
+  }
+}
