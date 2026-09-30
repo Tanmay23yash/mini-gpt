@@ -18,7 +18,7 @@ run attention in each, concatenate, and mix with an output projection.
 
 Shape legend: B = batch, T = sequence length, C = d_model, H = n_heads, D = C // H.
 
-What you implement: every ``TODO``. Tests: ``pytest tests/test_attention.py -v``.
+Tests: ``pytest tests/test_attention.py -v``.
 """
 
 from __future__ import annotations
@@ -61,8 +61,14 @@ def scaled_dot_product_attention(
         4. apply dropout to the weights: ``F.dropout(weights, dropout_p, training)``
         5. out = dropped_weights @ v                         -> (B, H, T, D)
     """
-    # TODO: implement
-    raise NotImplementedError
+    t, d = q.size(-2), q.size(-1)
+    scores = q @ k.transpose(-2, -1) / math.sqrt(d)                         # (B, H, T, T)
+    if causal:
+        allowed = torch.tril(torch.ones(t, t, dtype=torch.bool, device=q.device))  # (T, T)
+        scores = scores.masked_fill(~allowed, float("-inf"))
+    weights = F.softmax(scores, dim=-1)                                     # rows sum to 1
+    out = F.dropout(weights, dropout_p, training) @ v                       # (B, H, T, D)
+    return out, weights
 
 
 class CausalSelfAttention(nn.Module):
@@ -79,13 +85,15 @@ class CausalSelfAttention(nn.Module):
     def __init__(self, d_model: int, n_heads: int, block_size: int, dropout: float = 0.0,
                  bias: bool = True) -> None:
         super().__init__()
-        # TODO: implement. The tests rely on these attribute names:
-        #   - raise ValueError if d_model is not divisible by n_heads
-        #   - self.n_heads, self.d_model, self.block_size, self.dropout (the float)
-        #   - self.qkv:  nn.Linear(d_model, 3 * d_model)  - Q, K and V for all heads in one matmul
-        #   - self.proj: nn.Linear(d_model, d_model)      - output projection after concatenating heads
-        #   - self.resid_dropout: nn.Dropout(dropout)     - applied to the output of self.proj
-        raise NotImplementedError
+        if d_model % n_heads != 0:
+            raise ValueError(f"d_model ({d_model}) must be divisible by n_heads ({n_heads})")
+        self.n_heads = n_heads
+        self.d_model = d_model
+        self.block_size = block_size
+        self.dropout = dropout
+        self.qkv = nn.Linear(d_model, 3 * d_model, bias=bias)  # Q, K, V for all heads in one matmul
+        self.proj = nn.Linear(d_model, d_model, bias=bias)     # mixes the concatenated heads
+        self.resid_dropout = nn.Dropout(dropout)
 
     def forward(self, x: torch.Tensor, return_attn: bool = False
                 ) -> torch.Tensor | tuple[torch.Tensor, torch.Tensor]:
@@ -110,5 +118,19 @@ class CausalSelfAttention(nn.Module):
                or ``.reshape(...)``)
             7. y = self.resid_dropout(self.proj(out))
         """
-        # TODO: implement
-        raise NotImplementedError
+        b, t, c = x.shape
+        if t > self.block_size:
+            raise ValueError(f"sequence length {t} exceeds block_size {self.block_size}")
+        head_dim = c // self.n_heads
+
+        q, k, v = self.qkv(x).split(self.d_model, dim=-1)                   # 3 x (B, T, C)
+        q = q.view(b, t, self.n_heads, head_dim).transpose(1, 2)            # (B, H, T, D)
+        k = k.view(b, t, self.n_heads, head_dim).transpose(1, 2)
+        v = v.view(b, t, self.n_heads, head_dim).transpose(1, 2)
+
+        out, weights = scaled_dot_product_attention(
+            q, k, v, causal=True, dropout_p=self.dropout, training=self.training)  # (B, H, T, D)
+
+        out = out.transpose(1, 2).reshape(b, t, c)                          # (B, T, C): heads side by side
+        y = self.resid_dropout(self.proj(out))
+        return (y, weights) if return_attn else y
