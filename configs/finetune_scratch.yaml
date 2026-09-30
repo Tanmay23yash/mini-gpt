@@ -1,0 +1,19 @@
+# Stage 2 control: identical model and training, but random init (no pre-training).
+run_name: gpt_scratch
+init: random                  # pretrained | random
+checkpoint: checkpoints/stage2/gpt_small/best.pt   # weights (pretrained) or just the architecture (random)
+tokenizer: artifacts/tokenizer/bpe_8192.json
+seeds: [42, 43, 44]
+lr_grid: [0.0001, 0.0003, 0.001]   # picked on val with the first seed
+max_len: 64                   # 99.5% of tweets fit
+pooling: last                 # hidden state of the closing <eot>
+head_dropout: 0.1
+batch_size: 32
+epochs: 8
+patience: 3                   # early stop after 3 epochs without val macro F1 gain
+warmup_frac: 0.1
+min_lr_ratio: 0.1
+weight_decay: 0.01
+betas: [0.9, 0.999]
+grad_clip: 1.0
+amp: false                    # fp32 is faster on the GTX 1650
