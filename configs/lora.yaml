@@ -1,0 +1,24 @@
+# Stage 3: LoRA fine-tune of Qwen3.5-0.8B on SentiMix, sized for the local GTX 1650 (4 GB).
+# Measured: ~5 s/step at batch 16 -> ~73 min per epoch. One lr (standard LoRA default), one seed.
+run_name: lora_local
+model_id: Qwen/Qwen3.5-0.8B
+dtype: bfloat16                  # emulated on the GTX 1650; fp32 does not fit
+
+lora:
+  r: 16                          # rank of the update B @ A
+  alpha: 32                      # scale = alpha / r = 2
+  dropout: 0.05
+  target_modules: all-linear     # every linear layer except the LM head (attention, linear-attention, MLP)
+  gradient_checkpointing: true   # recompute activations in backward: ~1/3 slower, much less memory
+
+train:
+  lr_grid: [0.0002]              # one value -> no sweep
+  seeds: [42]
+  epochs: 1
+  batch_size: 16
+  eval_batch_size: 32
+  warmup_frac: 0.05
+  min_lr_ratio: 0.1
+  weight_decay: 0.0
+  grad_clip: 1.0
+  log_interval: 50

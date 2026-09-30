@@ -14,4 +14,8 @@ datasets==5.0.1
 huggingface_hub==1.33.0
 tensorboard==2.21.0
 pytest==9.1.1
-# Stage 3+ (added when needed): transformers, peft, bitsandbytes, accelerate, gradio
+# Stage 3
+transformers==5.17.0
+peft==0.21.1
+accelerate==1.15.0
+# Stage 4+ (added when needed): gradio

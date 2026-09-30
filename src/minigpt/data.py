@@ -4,6 +4,7 @@ Usage::
 
     python -m minigpt.data --prepare   # download, clean, split -> data/processed/
     python -m minigpt.data --report    # print the data report, save a length plot
+    python -m minigpt.data --prepare --sentimix-only   # labeled data only (Kaggle, Stage 3)
 
 Outputs:
     data/processed/sentimix/{train,val,test}.csv   columns: uid,label,text,cmi
@@ -363,6 +364,8 @@ def main() -> None:
     parser.add_argument("--config", type=Path, default=CONFIG_DIR / "data.yaml")
     parser.add_argument("--prepare", action="store_true", help="download, clean and split the data")
     parser.add_argument("--report", action="store_true", help="print the data report")
+    parser.add_argument("--sentimix-only", action="store_true",
+                        help="with --prepare: skip the pre-training corpus (e.g. on Kaggle for Stage 3)")
     args = parser.parse_args()
     if not (args.prepare or args.report):
         parser.error("pass --prepare and/or --report")
@@ -370,8 +373,9 @@ def main() -> None:
     cfg = load_config(args.config)
     if args.prepare:
         rows = prepare_sentimix(cfg["sentimix"])
-        eval_texts = [r["text"] for split in ("val", "test") for r in rows[split]]
-        prepare_pretrain(cfg["pretrain"], eval_texts, seed=cfg["seed"])
+        if not args.sentimix_only:
+            eval_texts = [r["text"] for split in ("val", "test") for r in rows[split]]
+            prepare_pretrain(cfg["pretrain"], eval_texts, seed=cfg["seed"])
     if args.report:
         print_report(cfg)
 

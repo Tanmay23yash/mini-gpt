@@ -1,0 +1,13 @@
+# Stage 3: open LLM on SentiMix. Chosen with the owner on 2026-09-30.
+model_id: Qwen/Qwen3.5-0.8B     # Apache-2.0, released 2026-02, 201 languages; loads text-only
+dtype: bfloat16                 # GTX 1650 has no native bf16 (emulated) but fp32 does not fit in 4 GB
+seed: 42
+
+prompting:
+  system_prompt: >-
+    Classify the sentiment of the Hinglish (Hindi-English code-mixed) tweet as
+    positive, negative or neutral. Answer with one word.
+  k_values: [0, 3, 6]           # examples in the prompt; k chosen on val
+  example_seeds: [1, 2, 3]      # test: 3 different draws of the k examples
+  batch_size: {"0": 32, "3": 16, "6": 8}   # longer few-shot prompts need smaller batches
+  content_free: ["N/A", "", "[MASK]"]   # inputs for contextual calibration (Zhao et al., 2021)

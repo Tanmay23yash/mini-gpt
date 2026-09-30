@@ -1,0 +1,24 @@
+# Stage 3: LoRA fine-tune of Qwen3.5-0.8B on SentiMix on a Kaggle T4 (16 GB, fp16 tensor cores).
+# Same protocol as Stage 2: lr picked on val with the first seed, then 3 seeds.
+run_name: lora_kaggle
+model_id: Qwen/Qwen3.5-0.8B
+dtype: float16                   # T4 has no bf16; fp16 base + fp32 LoRA weights + loss scaling
+
+lora:
+  r: 16
+  alpha: 32
+  dropout: 0.05
+  target_modules: all-linear
+  gradient_checkpointing: false  # 16 GB is enough without it
+
+train:
+  lr_grid: [0.0001, 0.0002, 0.0005]
+  seeds: [42, 43, 44]
+  epochs: 2
+  batch_size: 16
+  eval_batch_size: 64
+  warmup_frac: 0.05
+  min_lr_ratio: 0.1
+  weight_decay: 0.0
+  grad_clip: 1.0
+  log_interval: 50
