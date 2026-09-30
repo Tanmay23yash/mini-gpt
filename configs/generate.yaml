@@ -1,0 +1,24 @@
+# Text generation settings for python -m minigpt.generate
+checkpoint: checkpoints/stage2/gpt_small/best.pt
+tokenizer: artifacts/tokenizer/bpe_8192.json
+seed: 7
+max_new_tokens: 40
+
+defaults:                 # used by --prompt unless overridden on the command line
+  temperature: 0.8
+  top_k: 50
+  top_p: null
+
+demo_output: results/stage2/samples.md
+prompts:
+  - ""                    # empty prompt: the model starts a tweet on its own
+  - "bhai aaj ka match"
+  - "yaar mood"
+  - "modi ji ne"
+  - "movie dekhi, ekdum"
+  - "I love"
+settings:
+  - {name: "greedy (T=0)", temperature: 0.0}
+  - {name: "T=0.7, top-k 50", temperature: 0.7, top_k: 50}
+  - {name: "T=1.0, top-p 0.9", temperature: 1.0, top_p: 0.9}
+  - {name: "T=1.5, no filter", temperature: 1.5}
