@@ -41,6 +41,8 @@ from minigpt.utils import get_device, load_config, set_seed
 # --------------------------------------------------------------------------- LEARN: schedule + step
 
 
+
+
 def get_lr(step: int, max_lr: float, min_lr: float, warmup_steps: int, max_steps: int) -> float:
     """Learning rate for ``step``: linear warmup, then cosine decay to ``min_lr``.
 
@@ -62,8 +64,13 @@ def get_lr(step: int, max_lr: float, min_lr: float, warmup_steps: int, max_steps
     Why warmup: at the start Adam's statistics are noisy and a big lr can wreck the
     random init. Why decay: small steps at the end settle into a better minimum.
     """
-    # TODO: implement
-    raise NotImplementedError
+    if step < warmup_steps:                                            # ramp up
+        return max_lr * (step + 1) / warmup_steps
+    if step >= max_steps:                                              # training over: stay at the floor
+        return min_lr
+    progress = (step - warmup_steps) / (max_steps - warmup_steps)      # 0 -> 1
+    coeff = 0.5 * (1 + math.cos(math.pi * progress))                   # 1 -> 0
+    return min_lr + coeff * (max_lr - min_lr)
 
 
 def train_step(model: nn.Module, x: torch.Tensor, y: torch.Tensor, optimizer: torch.optim.Optimizer,
@@ -90,8 +97,15 @@ def train_step(model: nn.Module, x: torch.Tensor, y: torch.Tensor, optimizer: to
         7. optimizer.zero_grad(set_to_none=True)    # gradients accumulate otherwise!
         8. return loss.item(), grad_norm.item()
     """
-    # TODO: implement
-    raise NotImplementedError
+    with amp_ctx:                                                       # 1. forward
+        loss = model(x, targets=y).loss
+    scaler.scale(loss).backward()                                       # 2. backward: compute gradients
+    scaler.unscale_(optimizer)                                          # 3. undo the fp16 scaling
+    grad_norm = nn.utils.clip_grad_norm_(model.parameters(), grad_clip) # 4. clip big gradients
+    scaler.step(optimizer)                                              # 5. update the weights
+    scaler.update()                                                     # 6. adjust the fp16 scale
+    optimizer.zero_grad(set_to_none=True)                               # 7. reset for the next step
+    return loss.item(), grad_norm.item()                                # 8. plain Python numbers
 
 
 # --------------------------------------------------------------------------- data
@@ -180,7 +194,8 @@ def plot_loss(history: list[dict[str, float]], path: Path, title: str) -> None:
         xs = [h["tokens"] / 1e6 for h in rows]
         ys = [h[key] for h in rows]
         ax.plot(xs, ys, color=color, linewidth=2, label=name, marker="o" if name == "val" else None, markersize=4)
-        ax.annotate(f"{name} {ys[-1]:.3f}", (xs[-1], ys[-1]), textcoords="offset points", xytext=(6, 0),
+        offset = 7 if name == "train" else -7  # train and val end close together: stagger the labels
+        ax.annotate(f"{name} {ys[-1]:.3f}", (xs[-1], ys[-1]), textcoords="offset points", xytext=(6, offset),
                     color="#52514e", fontsize=8, va="center")
     _style(ax)
     ax.set_xlabel("tokens seen (millions)", color="#52514e", fontsize=9)

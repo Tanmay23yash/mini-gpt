@@ -1,0 +1,45 @@
+{
+  "run_name": "gpt_small",
+  "params": 5289728,
+  "best_val_loss": 5.008674612045288,
+  "best_val_perplexity": 149.7061858245701,
+  "final_train_loss": 5.051507472991943,
+  "steps": 12000,
+  "tokens_seen": 98304000,
+  "minutes": 40.1,
+  "device": "cuda",
+  "config": {
+    "run_name": "gpt_small",
+    "seed": 42,
+    "data_dir": "data/processed/pretrain",
+    "checkpoint_dir": "checkpoints/stage2",
+    "results_dir": "results/stage2",
+    "model": {
+      "vocab_size": 8193,
+      "block_size": 128,
+      "d_model": 256,
+      "n_layers": 4,
+      "n_heads": 4,
+      "dropout": 0.1,
+      "bias": true
+    },
+    "train": {
+      "device": "auto",
+      "batch_size": 64,
+      "max_steps": 12000,
+      "warmup_steps": 500,
+      "max_lr": 0.001,
+      "min_lr": 0.0001,
+      "weight_decay": 0.1,
+      "betas": [
+        0.9,
+        0.95
+      ],
+      "grad_clip": 1.0,
+      "amp": false,
+      "log_interval": 100,
+      "eval_interval": 500,
+      "eval_iters": 50
+    }
+  }
+}

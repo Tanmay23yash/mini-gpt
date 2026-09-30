@@ -30,3 +30,16 @@ One entry per run: date, config file, key hyperparameters, metrics, notes.
   own token; BPE does not merge them. Their similarity must come from pre-training (similar
   contexts -> similar embeddings). Rare variants split into shared pieces (`bhaiya|aaa`).
 - No `<unk>` at all (byte fallback) vs 10.5% OOV for the Stage 1 word vocab.
+| 2026-09-30 | 2 | `configs/gpt_debug.yaml` | GPT 2 layers, d=64, T=64 | 0.63M | val loss 7.42 (ppl 1672) | - | 300 steps, 0.3M tokens, 6 s. Pipeline check only. |
+| 2026-09-30 | 2 | `configs/gpt_small.yaml` | GPT 4 layers, d=256, 4 heads, T=128, fp32 | 5.29M | **val loss 5.009 (ppl 149.7)** | - | 12k steps x 8192 tok = 98M tokens (~1.8 epochs), 40.1 min on GTX 1650, ~42.5k tok/s. Init loss 9.07 = ln(8193). |
+
+### Pre-training notes (gpt_small)
+
+- Train and val loss stay together the whole run (5.05 vs 5.01 at the end), so there is
+  **no overfitting**: the model is capacity-limited, not data-limited. A larger model (Kaggle GPU)
+  should lower the loss further. (Val sits slightly below train because train loss is measured
+  with dropout on, on single noisy batches.)
+- Most of the gain happens in the first ~10M tokens (9.07 -> 5.7); the last 50M tokens buy ~0.15.
+- fp16 AMP was 4.6x slower than fp32 on the GTX 1650 (no tensor cores), so this run is fp32.
+- Samples (top-k 50, temperature 0.8): "modi ji ne kaha tha ki bjp ka koi fayda nahi hai, ab kya hai?",
+  "yaar mood khrab ho gaya ..". Grammatical Hinglish with natural code-switching and emoji.

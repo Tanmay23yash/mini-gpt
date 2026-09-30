@@ -1,0 +1,45 @@
+{
+  "run_name": "gpt_debug",
+  "params": 628544,
+  "best_val_loss": 7.421735668182373,
+  "best_val_perplexity": 1671.9329115730648,
+  "final_train_loss": 7.456310272216797,
+  "steps": 300,
+  "tokens_seen": 307200,
+  "minutes": 0.1,
+  "device": "cuda",
+  "config": {
+    "run_name": "gpt_debug",
+    "seed": 42,
+    "data_dir": "data/processed/pretrain",
+    "checkpoint_dir": "checkpoints/stage2",
+    "results_dir": "results/stage2",
+    "model": {
+      "vocab_size": 8193,
+      "block_size": 64,
+      "d_model": 64,
+      "n_layers": 2,
+      "n_heads": 2,
+      "dropout": 0.0,
+      "bias": true
+    },
+    "train": {
+      "device": "auto",
+      "batch_size": 16,
+      "max_steps": 300,
+      "warmup_steps": 30,
+      "max_lr": 0.003,
+      "min_lr": 0.0003,
+      "weight_decay": 0.1,
+      "betas": [
+        0.9,
+        0.95
+      ],
+      "grad_clip": 1.0,
+      "amp": false,
+      "log_interval": 25,
+      "eval_interval": 100,
+      "eval_iters": 10
+    }
+  }
+}
