@@ -213,8 +213,10 @@ def compare() -> list[dict[str, Any]]:
     plt = _plt()
     fig, ax = plt.subplots(figsize=(8, 0.55 * len(rows) + 1.2), facecolor=SURFACE)
     ys = range(len(rows))
-    ax.barh(ys, [r["mean"] for r in rows], height=0.6, color=SERIES[0], xerr=[r["std"] for r in rows],
-            error_kw={"ecolor": INK_MUTED, "elinewidth": 1, "capsize": 3})
+    ax.barh(ys, [r["mean"] for r in rows], height=0.6, color=SERIES[0])
+    multi = [(y, r) for y, r in zip(ys, rows) if r["seeds"] > 1]  # error bars only where there is a spread
+    ax.errorbar([r["mean"] for _, r in multi], [y for y, _ in multi], xerr=[r["std"] for _, r in multi],
+                fmt="none", ecolor=INK_MUTED, elinewidth=1, capsize=3)
     for y, r in zip(ys, rows):
         ax.text(r["mean"] + r["std"] + 0.01, y, f"{r['mean']:.3f}", va="center", fontsize=8, color=INK)
     ax.set_yticks(list(ys), [r["model"] for r in rows])

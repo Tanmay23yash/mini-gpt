@@ -4,13 +4,15 @@ init: pretrained              # pretrained | random
 checkpoint: checkpoints/stage2/gpt_small/best.pt   # weights (pretrained) or just the architecture (random)
 tokenizer: artifacts/tokenizer/bpe_8192.json
 seeds: [42, 43, 44]
-lr_grid: [0.0001, 0.0003, 0.001]   # picked on val with the first seed
+lr_grid: [0.00001, 0.00003, 0.0001, 0.0003, 0.001]   # picked on val with the first seed; v2 chose the
+                                                     # lowest value (3e-5), so 1e-5 was added
 max_len: 64                   # 99.5% of tweets fit
 pooling: last                 # hidden state of the closing <eot>
 head_dropout: 0.1
 batch_size: 32
-epochs: 8
-patience: 3                   # early stop after 3 epochs without val macro F1 gain
+epochs: 3                     # v1 used 8: best val F1 came at epoch 1-2, then overfitting;
+                              # a short run lets the lr decay fully while the model is still good
+patience: 2                   # early stop after 2 epochs without val macro F1 gain
 warmup_frac: 0.1
 min_lr_ratio: 0.1
 weight_decay: 0.01

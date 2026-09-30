@@ -43,3 +43,26 @@ One entry per run: date, config file, key hyperparameters, metrics, notes.
 - fp16 AMP was 4.6x slower than fp32 on the GTX 1650 (no tensor cores), so this run is fp32.
 - Samples (top-k 50, temperature 0.8): "modi ji ne kaha tha ki bjp ka koi fayda nahi hai, ab kya hai?",
   "yaar mood khrab ho gaya ..". Grammatical Hinglish with natural code-switching and emoji.
+| 2026-09-30 | 2 | `configs/finetune_scratch.yaml` (v1: 8 epochs, lr grid 1e-4..1e-3) | mini-GPT classifier, random init | 5.29M | test acc 0.630 | test 0.633 ± 0.002 | Chosen lr at grid edge; best epoch 2-3, then overfits. Superseded. |
+| 2026-09-30 | 2 | `configs/finetune_pretrained.yaml` (v1: 8 epochs, lr grid 1e-4..1e-3) | mini-GPT classifier, pre-trained | 5.29M | test acc 0.667 | test 0.670 ± 0.006 | Best epoch 1 for every seed, lr at grid edge. Superseded. |
+| 2026-09-30 | 2 | `configs/finetune_scratch.yaml` | mini-GPT classifier, random init, lr 1e-4, 3 epochs | 5.29M | test acc 0.636 (val 0.606) | test 0.640 ± 0.006 | Control: same model and training, no pre-training. |
+| 2026-09-30 | 2 | `configs/finetune_pretrained.yaml` | mini-GPT classifier, pre-trained gpt_small, lr 3e-5, 3 epochs | 5.29M | test acc 0.676 (val 0.628) | **test 0.679 ± 0.002** | +3.9 F1 over random init. Still 1.7 below TF-IDF (0.696). ~6 min for sweep + 3 seeds. |
+
+### Fine-tuning notes
+
+- **Pre-training is worth +3.9 macro F1** (0.679 vs 0.640, same architecture, same protocol,
+  3 seeds each, std <= 0.006), and it lifts the mini-GPT from BiLSTM level to clearly above the BiGRU.
+- **TF-IDF + LogReg still wins (0.696).** The pre-trained model beats it on positive tweets
+  (F1 0.752 vs 0.744) but loses on negative (0.699 vs 0.718) and neutral (0.587 vs 0.625).
+  With 5M parameters pre-trained on ~100M tokens, the model's language knowledge is limited
+  (val perplexity 150); character n-grams on 14k labeled tweets are a strong baseline for
+  short, noisy, code-mixed text. Stage 3 tests whether a real pre-trained LLM closes the gap.
+- **What didn't work (v1):** 8 epochs with warmup over the first 0.8 epochs. The model overfit
+  after 1-2 epochs while the lr was still near its peak, and the lr sweep picked the grid edge.
+  Short runs (3 epochs) with the lr decaying over the whole run fixed both: +0.9 F1 pre-trained,
+  +0.7 random init.
+- The pre-trained model needs a ~3x lower lr than the random-init one (3e-5 vs 1e-4): large
+  updates overwrite what pre-training learned. The final sweep includes 1e-5 so 3e-5 is an
+  interior optimum (val F1 1e-5: 0.609, 3e-5: 0.631, 1e-4: 0.617).
+- Re-running the pre-trained sweep reproduced every test number to 4 decimals (fixed seeds,
+  deterministic cuDNN).
