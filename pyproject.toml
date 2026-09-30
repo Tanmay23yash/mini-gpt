@@ -14,4 +14,4 @@ where = ["src"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["src"]
-addopts = "-q"
+addopts = "-q --basetemp=.pytest_tmp"  # keep pytest temp files on E:, not C:\Users\...\Temp

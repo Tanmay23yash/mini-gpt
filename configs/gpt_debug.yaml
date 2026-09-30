@@ -1,0 +1,30 @@
+# Stage 2 debug run: tiny model, a few hundred steps. Checks the pipeline learns (CPU is fine).
+run_name: gpt_debug
+seed: 42
+data_dir: data/processed/pretrain
+checkpoint_dir: checkpoints/stage2
+results_dir: results/stage2
+
+model:
+  vocab_size: 8193        # BPE 8192 + <|endoftext|>
+  block_size: 64
+  d_model: 64
+  n_layers: 2
+  n_heads: 2
+  dropout: 0.0
+  bias: true
+
+train:
+  device: auto            # auto | cpu | cuda
+  batch_size: 16
+  max_steps: 300
+  warmup_steps: 30
+  max_lr: 0.003
+  min_lr: 0.0003
+  weight_decay: 0.1
+  betas: [0.9, 0.95]
+  grad_clip: 1.0
+  amp: false              # fp16 AMP is 4.6x slower on the GTX 1650 (no tensor cores); true on Kaggle T4
+  log_interval: 25
+  eval_interval: 100
+  eval_iters: 10
