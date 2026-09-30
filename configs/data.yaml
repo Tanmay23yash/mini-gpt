@@ -1,0 +1,29 @@
+# Stage 0 data config. Paths are relative to the project root.
+seed: 42
+
+sentimix:
+  # Mirror of the official SemEval-2020 Task 9 (SentiMix) Hinglish files.
+  hf_repo: RTT1/SentiMix
+  files:
+    train: train_14k_split_conll.txt
+    val: dev_3k_split_conll.txt
+    test: Hindi_test_unalbelled_conll_updated.txt
+    test_labels: test_labels_hinglish.txt
+  out_dir: data/processed/sentimix
+  labels: [negative, neutral, positive]
+
+pretrain:
+  # L3Cube-HingCorpus (roman), CC BY-NC-SA 4.0. One shuffled tweet per line.
+  url: https://drive.usercontent.google.com/download?id=1s_6eHO9zDhxQ-xVN1TyNguszV1meZkl9&export=download&confirm=t
+  archive: data/raw/hingcorpus/L3Cube-HingCorpus_roman.tar.gz
+  out_dir: data/processed/pretrain
+  # The file is already shuffled, so the first N lines are a random sample.
+  max_lines: 2000000       # ~40M words; raise for GPU runs
+  min_words: 3             # drop very short lines
+  val_fraction: 0.01
+  # Drop corpus lines whose normalized prefix matches a SentiMix val/test tweet.
+  leakage_prefix_chars: 40
+
+report:
+  plot_path: results/data_lengths.png
+  examples_per_class: 2
