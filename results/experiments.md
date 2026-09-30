@@ -22,3 +22,11 @@ One entry per run: date, config file, key hyperparameters, metrics, notes.
   simply easier than the dev split. Model selection used val only; the gap is a dataset
   property, not leakage. Compare models on the same split, never val-vs-test.
 - Reference: best SemEval-2020 SentiMix Hinglish system reported 75.0 F1 (BERT-based).
+| 2026-09-30 | 2 | `configs/bpe.yaml` | Byte-level BPE, 8192 vocab (+`<\|endoftext\|>`), trained on 50k corpus lines | - | 3.74 bytes/token on val | - | 31 min to train (pure Python), 0.8 min to encode 2M lines (chunk cache). 54.5M train / 0.55M val tokens. 77% of words are 1 token. SentiMix: 27 tokens/tweet mean, 99.5% <= 64 tokens. |
+
+### Tokenizer notes
+
+- Frequent spelling variants (`nahi` / `nhi` / `nai`, `accha` / `acha` / `achha`) each get their
+  own token; BPE does not merge them. Their similarity must come from pre-training (similar
+  contexts -> similar embeddings). Rare variants split into shared pieces (`bhaiya|aaa`).
+- No `<unk>` at all (byte fallback) vs 10.5% OOV for the Stage 1 word vocab.

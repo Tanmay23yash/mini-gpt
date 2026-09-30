@@ -2,4 +2,4 @@
 vocab_size: 8192          # 256 bytes + 7936 merges (+1 special token <|endoftext|>)
 train_lines: 50000        # corpus lines used to learn merges (~20-25 min with the simple algorithm)
 corpus_dir: data/processed/pretrain
-output: checkpoints/tokenizer/bpe_8192.json
+output: artifacts/tokenizer/bpe_8192.json  # committed to git: 31 min to retrain
