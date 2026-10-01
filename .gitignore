@@ -1,5 +1,7 @@
 # Large / local-only artifacts
 data/
+# contains SentiMix test tweets (research-use data); a cache, rebuilt by minigpt.compare
+results/stage3/predictions_test.csv
 checkpoints/
 wandb/
 runs/

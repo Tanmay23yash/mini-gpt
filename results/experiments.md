@@ -95,3 +95,22 @@ One entry per run: date, config file, key hyperparameters, metrics, notes.
   could add a little. The lr differences are small (0.641-0.653 val F1) but monotonic.
 - fp16 GradScaler: the default init scale (2^16) overflows on this model; measured locally that
   steps only succeed below ~64, so the scaler starts at 2^10.
+
+### Stage 3 final comparison (`python -m minigpt.compare`, results/stage3/comparison.md)
+
+| Model | Test macro F1 | 95% CI (paired bootstrap, rep. run) |
+|---|---|---|
+| Qwen3.5-0.8B + LoRA | **0.714 ± 0.007** | [0.699, 0.730] |
+| TF-IDF + LogReg | 0.696 | [0.680, 0.712] |
+| mini-GPT, pre-trained + fine-tuned | 0.679 ± 0.002 | [0.663, 0.696] |
+| Qwen3.5-0.8B 3-shot | 0.508 ± 0.026 | [0.490, 0.522] |
+
+- LoRA vs TF-IDF: +0.018, 95% CI [+0.002, +0.035] (LoRA better in 98.6% of resamples): a real
+  but small win. TF-IDF vs mini-GPT: +0.015, CI [-0.001, +0.032]: **not** significant at 95%.
+- Per class, LoRA is best on all three (neg 0.737 / neu 0.647 / pos 0.759).
+- Representative-run point estimates match the training-time numbers (LoRA seed 44: 0.7165 on
+  Kaggle in fp16 vs 0.714 here in bf16 - the small gap is inference precision).
+- Generation: the mini-GPT writes short, tweet-like Hinglish; Qwen3.5-0.8B (a chat/thinking
+  model) continues raw text with chat artifacts (`<think>`), repetition or drifts into
+  translation mode. Domain pre-training gives the small model the right *style*; the LLM
+  gives better *understanding* once fine-tuned.

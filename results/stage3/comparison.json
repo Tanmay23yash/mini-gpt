@@ -1,0 +1,214 @@
+{
+  "representative_runs": {
+    "minigpt_seed": 44,
+    "qwen_3shot_example_seed": 2,
+    "qwen_lora_seed": 44
+  },
+  "point_macro_f1": {
+    "tfidf": 0.6958383606524877,
+    "minigpt": 0.6804697917438954,
+    "qwen_3shot": 0.5060575492650213,
+    "qwen_lora": 0.714292445287214
+  },
+  "bootstrap_ci": {
+    "tfidf": [
+      0.6795316270855499,
+      0.7117940345693805
+    ],
+    "minigpt": [
+      0.663147131502708,
+      0.6963709626779052
+    ],
+    "qwen_3shot": [
+      0.4904245962812784,
+      0.5218895465987871
+    ],
+    "qwen_lora": [
+      0.6988416440637463,
+      0.7300848101751803
+    ]
+  },
+  "differences": {
+    "qwen_lora - tfidf": {
+      "diff": 0.01845408463472631,
+      "ci": [
+        0.0016996841863602759,
+        0.03508624501142611
+      ],
+      "p_better": 0.9855
+    },
+    "qwen_lora - minigpt": {
+      "diff": 0.03382265354331859,
+      "ci": [
+        0.01714714464562208,
+        0.05083940507762149
+      ],
+      "p_better": 1.0
+    },
+    "tfidf - minigpt": {
+      "diff": 0.015368568908592284,
+      "ci": [
+        -0.0012868776682154997,
+        0.03204296550133426
+      ],
+      "p_better": 0.9675
+    },
+    "qwen_lora - qwen_3shot": {
+      "diff": 0.2082348960221927,
+      "ci": [
+        0.1885178906385358,
+        0.22930072402990823
+      ],
+      "p_better": 1.0
+    },
+    "minigpt - qwen_3shot": {
+      "diff": 0.1744122424788741,
+      "ci": [
+        0.1531651278966114,
+        0.19512551697721592
+      ],
+      "p_better": 1.0
+    }
+  },
+  "per_class_f1": {
+    "tfidf": {
+      "negative": 0.7183017785427424,
+      "neutral": 0.6252173913043478,
+      "positive": 0.743995912110373
+    },
+    "minigpt": {
+      "negative": 0.7123430962343096,
+      "neutral": 0.5870463941203491,
+      "positive": 0.7420198848770277
+    },
+    "qwen_3shot": {
+      "negative": 0.6335570469798658,
+      "neutral": 0.18335901386748846,
+      "positive": 0.7012565869477098
+    },
+    "qwen_lora": {
+      "negative": 0.7365439093484419,
+      "neutral": 0.6472327841149134,
+      "positive": 0.7591006423982869
+    }
+  },
+  "table": [
+    {
+      "key": "qwen_lora",
+      "model": "Qwen3.5-0.8B + LoRA",
+      "stage": 3,
+      "params": 752000000,
+      "trained": 10822656,
+      "f1": {
+        "mean": 0.7140694459363717,
+        "std": 0.006933950486770394
+      },
+      "acc": 0.7095555555555556,
+      "seeds": 3
+    },
+    {
+      "key": "tfidf",
+      "model": "TF-IDF + LogReg",
+      "stage": 1,
+      "params": 333192,
+      "trained": "all",
+      "f1": {
+        "mean": 0.6958383606524877,
+        "std": 0.0
+      },
+      "acc": 0.691,
+      "seeds": 1
+    },
+    {
+      "key": "minigpt",
+      "model": "mini-GPT (pre-trained, fine-tuned)",
+      "stage": 2,
+      "params": 5290499,
+      "trained": "all",
+      "f1": {
+        "mean": 0.67937878394167,
+        "std": 0.00242326121891963
+      },
+      "acc": 0.6761111111111111,
+      "seeds": 3
+    },
+    {
+      "key": "bigru",
+      "model": "BiGRU (word vocab)",
+      "stage": 1,
+      "params": 1846147,
+      "trained": "all",
+      "f1": {
+        "mean": 0.65346896595438,
+        "std": 0.002468621651784108
+      },
+      "acc": 0.6507777777777778,
+      "seeds": 3
+    },
+    {
+      "key": "minigpt_scratch",
+      "model": "mini-GPT (random init, fine-tuned)",
+      "stage": 2,
+      "params": 5290499,
+      "trained": "all",
+      "f1": {
+        "mean": 0.6399494008339809,
+        "std": 0.006383531197332891
+      },
+      "acc": 0.6357777777777778,
+      "seeds": 3
+    },
+    {
+      "key": "bilstm",
+      "model": "BiLSTM (word vocab)",
+      "stage": 1,
+      "params": 1912195,
+      "trained": "all",
+      "f1": {
+        "mean": 0.6390330026807217,
+        "std": 0.017480791211250513
+      },
+      "acc": 0.637888888888889,
+      "seeds": 3
+    },
+    {
+      "key": "qwen_3shot",
+      "model": "Qwen3.5-0.8B 3-shot",
+      "stage": 3,
+      "params": 752000000,
+      "trained": "none",
+      "f1": {
+        "mean": 0.5081371489490903,
+        "std": 0.025649409291822856
+      },
+      "acc": 0.5648888888888889,
+      "seeds": 3
+    },
+    {
+      "key": "qwen_0shot",
+      "model": "Qwen3.5-0.8B zero-shot",
+      "stage": 3,
+      "params": 752000000,
+      "trained": "none",
+      "f1": {
+        "mean": 0.4150993105515883,
+        "std": 0.0
+      },
+      "acc": 0.511,
+      "seeds": 1
+    },
+    {
+      "key": "majority",
+      "model": "Majority class",
+      "stage": 1,
+      "params": 0,
+      "trained": "-",
+      "f1": {
+        "mean": 0.17886178861788618,
+        "std": 0.0
+      },
+      "acc": 0.36666666666666664,
+      "seeds": 1
+    }
+  ]
+}

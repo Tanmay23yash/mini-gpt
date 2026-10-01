@@ -1,0 +1,5 @@
+{
+  "minigpt_seed": 44,
+  "qwen_3shot_example_seed": 2,
+  "qwen_lora_seed": 44
+}
