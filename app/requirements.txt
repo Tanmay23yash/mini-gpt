@@ -1,0 +1,14 @@
+# Hugging Face Space dependencies (gradio itself comes from sdk_version in README.md).
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch==2.11.0+cpu
+transformers==5.17.0
+peft==0.21.1
+accelerate==1.15.0
+safetensors
+scikit-learn==1.8.0
+joblib
+numpy==2.4.1
+PyYAML==6.0.3
+python-dotenv==1.2.1
+ftfy==6.3.1
+matplotlib==3.11.2

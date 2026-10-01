@@ -16,6 +16,8 @@ __pycache__/
 .ipynb_checkpoints/
 build/
 dist/
+# exported demo models, rebuilt by python -m minigpt.export_app
+app/models/
 
 # Editors / OS
 .vscode/

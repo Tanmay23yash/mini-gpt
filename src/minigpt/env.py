@@ -27,7 +27,8 @@ def setup_env() -> None:
     so user-level settings are respected.
     """
     load_dotenv(PROJECT_ROOT / ".env", override=False)
-    for var in ("PIP_CACHE_DIR", "HF_HOME", "TORCH_HOME", "MPLCONFIGDIR", "WANDB_DIR", "WANDB_CACHE_DIR"):
+    for var in ("PIP_CACHE_DIR", "HF_HOME", "TORCH_HOME", "MPLCONFIGDIR", "WANDB_DIR", "WANDB_CACHE_DIR",
+                "GRADIO_TEMP_DIR"):
         value = os.environ.get(var)
         if value:
             Path(value).mkdir(parents=True, exist_ok=True)

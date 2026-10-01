@@ -52,8 +52,9 @@ def load_splits(labels: list[str]) -> dict[str, Split]:
 # --------------------------------------------------------------------------- TF-IDF
 
 
-def tfidf_features(cfg: dict[str, Any], data: dict[str, Split]) -> dict[str, Any]:
-    """Word 1-2 + character 2-5 n-gram TF-IDF, fit on train, applied to every split."""
+def tfidf_features(cfg: dict[str, Any], data: dict[str, Split], return_vectorizer: bool = False) -> Any:
+    """Word 1-2 + character 2-5 n-gram TF-IDF, fit on train, applied to every split.
+    With ``return_vectorizer`` also returns the fitted FeatureUnion (for the demo app)."""
     from sklearn.feature_extraction.text import TfidfVectorizer
     from sklearn.pipeline import FeatureUnion
 
@@ -65,7 +66,8 @@ def tfidf_features(cfg: dict[str, Any], data: dict[str, Split]) -> dict[str, Any
                                  token_pattern=r"[\w']+", **common)),
         ("char", TfidfVectorizer(analyzer="char_wb", ngram_range=tuple(t["char_ngrams"]), **common)),
     ])
-    return {s: (features.fit_transform if s == "train" else features.transform)(data[s]["texts"]) for s in SPLITS}
+    x = {s: (features.fit_transform if s == "train" else features.transform)(data[s]["texts"]) for s in SPLITS}
+    return (x, features) if return_vectorizer else x
 
 
 def tfidf_test_predictions(cfg: dict[str, Any], data: dict[str, Split], c: float) -> list[int]:

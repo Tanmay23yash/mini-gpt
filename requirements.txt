@@ -18,4 +18,5 @@ pytest==9.1.1
 transformers==5.17.0
 peft==0.21.1
 accelerate==1.15.0
-# Stage 4+ (added when needed): gradio
+# Stage 4
+gradio==6.29.0
