@@ -83,3 +83,15 @@ One entry per run: date, config file, key hyperparameters, metrics, notes.
 - The choice of the 3 examples moves test macro F1 by up to 5 points (0.484-0.535).
 - Even few-shot (0.508) is far below the 5M-param mini-GPT fine-tuned on SentiMix (0.679):
   task-specific labels matter more than 150x more parameters without them.
+| 2026-10-01 | 3 | `configs/lora_kaggle.yaml` | Qwen3.5-0.8B + LoRA (r=16, all-linear), fp16 on Kaggle T4, lr 1e-4, 2 epochs | 0.75B (10.8M trained) | test acc 0.710 (val 0.655) | **test 0.714 ± 0.007** | Best model overall. lr sweep (val): 1e-4 0.653, 2e-4 0.646, 5e-4 0.641. ~47 min per run on a T4. |
+
+### LoRA notes (Qwen3.5-0.8B)
+
+- LoRA fixes the base model's neutral problem: neutral predictions go from 5-8% (3-shot) to
+  35-42% (true share 37%), neutral F1 0.61-0.65. Negative 0.73, positive 0.76-0.78.
+- **First model to beat TF-IDF (0.696)**, by 1.8 macro F1 (seed std 0.007).
+- Limitation: the chosen lr (1e-4) is the lowest in the grid and every seed's best epoch was the
+  last (2 of 2), so the model may be slightly under-tuned; a follow-up with lr 5e-5 and 3 epochs
+  could add a little. The lr differences are small (0.641-0.653 val F1) but monotonic.
+- fp16 GradScaler: the default init scale (2^16) overflows on this model; measured locally that
+  steps only succeed below ~64, so the scaler starts at 2^10.

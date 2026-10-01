@@ -52,12 +52,10 @@ def load_splits(labels: list[str]) -> dict[str, Split]:
 # --------------------------------------------------------------------------- TF-IDF
 
 
-def run_tfidf(cfg: dict[str, Any], data: dict[str, Split]) -> dict[str, Any]:
-    """Word + character n-gram TF-IDF with logistic regression; C picked on val."""
-    from sklearn.linear_model import LogisticRegression
-    from sklearn.pipeline import FeatureUnion
-
+def tfidf_features(cfg: dict[str, Any], data: dict[str, Split]) -> dict[str, Any]:
+    """Word 1-2 + character 2-5 n-gram TF-IDF, fit on train, applied to every split."""
     from sklearn.feature_extraction.text import TfidfVectorizer
+    from sklearn.pipeline import FeatureUnion
 
     t = cfg["tfidf"]
     common = {"min_df": t["min_df"], "sublinear_tf": t["sublinear_tf"], "lowercase": True,
@@ -67,8 +65,23 @@ def run_tfidf(cfg: dict[str, Any], data: dict[str, Split]) -> dict[str, Any]:
                                  token_pattern=r"[\w']+", **common)),
         ("char", TfidfVectorizer(analyzer="char_wb", ngram_range=tuple(t["char_ngrams"]), **common)),
     ])
-    x = {s: (features.fit_transform if s == "train" else features.transform)(data[s]["texts"]) for s in SPLITS}
+    return {s: (features.fit_transform if s == "train" else features.transform)(data[s]["texts"]) for s in SPLITS}
 
+
+def tfidf_test_predictions(cfg: dict[str, Any], data: dict[str, Split], c: float) -> list[int]:
+    """Refit the TF-IDF model with a given C (e.g. the one chosen on val) and predict test."""
+    from sklearn.linear_model import LogisticRegression
+
+    x = tfidf_features(cfg, data)
+    clf = LogisticRegression(C=c, max_iter=cfg["logreg"]["max_iter"], random_state=cfg["seeds"][0])
+    return clf.fit(x["train"], data["train"]["y"]).predict(x["test"]).tolist()
+
+
+def run_tfidf(cfg: dict[str, Any], data: dict[str, Split]) -> dict[str, Any]:
+    """Word + character n-gram TF-IDF with logistic regression; C picked on val."""
+    from sklearn.linear_model import LogisticRegression
+
+    x = tfidf_features(cfg, data)
     best: dict[str, Any] = {"f1": -1.0}
     for c in cfg["logreg"]["C_grid"]:
         clf = LogisticRegression(C=c, max_iter=cfg["logreg"]["max_iter"], random_state=cfg["seeds"][0])
