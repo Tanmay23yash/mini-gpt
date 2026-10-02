@@ -2,6 +2,7 @@
 
 import os
 
+import pytest
 import torch
 
 import minigpt
@@ -13,6 +14,7 @@ def test_project_root_has_pyproject() -> None:
     assert (PROJECT_ROOT / "pyproject.toml").exists()
 
 
+@pytest.mark.skipif(not (PROJECT_ROOT / ".env").exists(), reason="no .env: cache paths are machine-specific")
 def test_cache_dirs_not_on_c_drive() -> None:
     for var in ("HF_HOME", "TORCH_HOME"):
         value = os.environ.get(var, "")
