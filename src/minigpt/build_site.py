@@ -108,7 +108,8 @@ def build() -> Path:
         "---\ntitle: mini-gpt Hinglish\nemoji: 🗣️\ncolorFrom: blue\ncolorTo: green\nsdk: static\n"
         "license: cc-by-nc-sa-4.0\nshort_description: Hinglish GPT from scratch vs LoRA-tuned Qwen3.5 sentiment\n---\n\n"
         "Project page for mini-gpt: a GPT written from scratch, pre-trained on Hinglish tweets, compared with "
-        "classic NLP and a LoRA-tuned Qwen3.5-0.8B on SemEval-2020 SentiMix sentiment. Static page, no live model.\n",
+        "classic NLP and a LoRA-tuned Qwen3.5-0.8B on SemEval-2020 SentiMix sentiment. Static page, no live model.\n\n"
+        "Code: https://github.com/Tanmay23yash/mini-gpt\n",
         encoding="utf-8")
     total = sum(f.stat().st_size for f in SITE.rglob("*") if f.is_file())
     print(f"site: {SITE} ({total / 1e6:.1f} MB, {len(data['examples'])} example tweets)")

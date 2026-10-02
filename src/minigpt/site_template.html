@@ -41,6 +41,8 @@ h2 { font-size: 1.4rem; margin: 56px 0 12px; letter-spacing: -0.01em; }
 h3 { font-size: 1.05rem; margin: 28px 0 8px; }
 p, li { color: var(--ink-2); }
 .lede { font-size: 1.1rem; max-width: 46rem; }
+.links a { color: var(--accent); font-weight: 600; text-decoration: none; }
+.links a:hover { text-decoration: underline; }
 .tag { display: inline-block; font-size: 0.8rem; color: var(--ink-3); border: 1px solid var(--border);
   border-radius: 999px; padding: 2px 10px; margin: 0 6px 6px 0; }
 .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; margin: 28px 0 8px; }
@@ -102,6 +104,7 @@ footer { margin-top: 56px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     <p class="lede">A 5.3M-parameter GPT written from scratch in PyTorch and pre-trained on 98M tokens of Hinglish tweets,
       compared with classic NLP baselines and with Qwen3.5-0.8B (zero-shot, few-shot and LoRA fine-tuned) on the same
       SemEval-2020 SentiMix sentiment test set: 3,000 tweets, macro F1.</p>
+    <p class="links"><a href="https://github.com/Tanmay23yash/mini-gpt">Code on GitHub →</a></p>
   </header>
 
   <section class="stats" aria-label="Key results">
@@ -170,7 +173,8 @@ $table_rows
   </ul>
 
   <h2>Run it yourself</h2>
-  <p>The full live demo (classify with all three models, generate text, attention maps) runs locally:</p>
+  <p>The full live demo (classify with all three models, generate text, attention maps) runs locally from the
+    <a href="https://github.com/Tanmay23yash/mini-gpt">GitHub repo</a>:</p>
   <pre><code>pip install -r requirements.txt &amp;&amp; pip install -e .
 python -m minigpt.export_app
 python app/app.py</code></pre>
